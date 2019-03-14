@@ -42,14 +42,33 @@
 //Do not change the name of the PrimVsKruskal class
 public class PrimVsKruskal{
 
+	private Queue<Edge> primMST;  //mark edges in Prim MST
+	private boolean[] marked;     //mark visited edges in prim's
+	private MinPQ<Edge> primPQ;   //priority queue for prim implementation
+	//------------------------------------------------------------------
+	private Queue<Edge> krusMST;  //mark edges in Kruskal MST
+	private MinPQ<Edge> krusPQ;   //priority queue for kruskal implementation
+	private UF uf;				  //Union find data structure
+	
+	//gets the adjacency list from the matrix
 	public static double[] GetAdjList(double[][] G, int index){
 		return G[index];
 	}
+	//prints adjacency list
 	static void PrintAdjList(double[] list){
 		for (int i = 0; i < list.length; i++){
 			System.out.println(list[i]);
 		}
 	}
+
+
+
+
+
+
+
+
+
 	/* PrimVsKruskal(G)
 		Given an adjacency matrix for connected graph G, with no self-loops or parallel edges,
 		determine if the minimum spanning tree of G found by Prim's algorithm is equal to 
