@@ -42,17 +42,6 @@
 //Do not change the name of the PrimVsKruskal class
 public class PrimVsKruskal{
 
-	static Queue<Edge> primMST;  //mark edges in Prim MST
-	static boolean[] marked;     //mark visited edges in prim's
-	static double[] distTo;		 // weight of shortest edge
-	static Edge[] edgeTo;	 	 //shortest edge from tree vertex to non tree vertex
-	static IndexMinPQ<Double> primPQ;   //priority queue for prim implementation
-	//-----------------------------------------------------------------------
-	static Queue<Edge> krusMST;  //mark edges in Kruskal MST
-	static IndexMinPQ<Edge> krusPQ;   //priority queue for kruskal implementation
-	static UF uf;				  //Union find data structure
-	static double weight;		 //total weight of kruskal MST
-	//-----------------------------------------------------------------------
 	//gets the adjacency list from the matrix
 	public static double[] GetAdjList(double[][] G, int index){
 		return G[index];
@@ -69,84 +58,6 @@ public class PrimVsKruskal{
 		return G.length;
 	}
 
-	static void InitPrim(double[] adjList, double[][] G){
-		int numVertices = GetLength(G);
-		
-		primPQ = new IndexMinPQ<Double>(numVertices);
-		edgeTo = new Edge[numVertices];
-		distTo = new double[numVertices];
-		marked = new boolean[numVertices];
-
-		for (int i = 0; i < numVertices; i++){
-			distTo[i] = Double.POSITIVE_INFINITY;
-		}
-		for (int i = 0; i < numVertices; i++){
-			if (!marked[i]){
-				RunPrims(adjList, i, G);
-			}
-		}
-	}
-
-	static void RunPrims(double[] adjList, int vertex, double[][] G){
-		distTo[vertex] = 0.0;
-		primPQ.insert(vertex, distTo[vertex]);
-		while(!primPQ.isEmpty()){
-			int m = primPQ.delMin();
-			ScanVertex(adjList, m, G); //scan all the edges adjacent to m
-		}
-	}
-
-	static void ScanVertex(double[] adjList, int vertex, double[][] G){
-		marked[vertex] = true;
-		int numVertices = GetLength(G);
-
-		for (int i = 0; i < numVertices; i++){
-			if (adjList[i] > 0){
-				//there exists an edge between vertices
-				int w = i;
-				if (marked[w]){
-					//vertex and w is obsolete edge
-					continue;
-				}
-				if (adjList[i] < distTo[w]){
-					distTo[w] = adjList[i];
-					edgeTo[w] = new Edge(vertex, w, adjList[i]);
-					if (primPQ.contains(w)){
-						primPQ.decreaseKey(w, distTo[w]);
-					} else {
-						primPQ.insert(w, distTo[w]);
-					}
-				}
-			}
-		}
-	}
-
-	static void InitKruskal(double[] adjList, int vertex, double[][] G){
-		krusPQ = new MinPQ<Edge>();
-		int numVertices = GetLength(G);
-		for (int i = 0; i < adjList.length; i++){ //get all edges around A
-			if (adjList[i] > 0){
-				//there exists an edge between vertices index and i
-				int w = i;  
-				double weight = adjList[i];
-				Edge e = new Edge(vertex, w, weight);
-				krusPQ.insert(e); //insert all edges into priority queue
-			}
-		}
-
-		UF uf = new UF(numVertices);
-		while (!krusPQ.isEmpty() && krusMST.size() < numVertices){
-			Edge e = krusPQ.delMin();
-			int v = e.either();
-			int w = e.other(v);
-			if (!uf.connected(v,w)){
-				//if v-w doesn't create a cycle
-				uf.union(v,w);
-				krusMST.enqueue(e); //add edge to MST
-				weight +=e.weight();
-			}
-		}
-	}
 
 	/* PrimVsKruskal(G)
 		Given an adjacency matrix for connected graph G, with no self-loops or parallel edges,
@@ -165,22 +76,8 @@ public class PrimVsKruskal{
 		/* ... Your code here ... */
 		
 		int n = GetLength(G);
-		double[] adjList;
-		for (int i = 0; i < n; i++){
-			adjList = GetAdjList(G, i);
-			InitKruskal(adjList, i, G);
-			InitPrim(adjList, G);
-		}
 
-
-
-
-
-
-
-
-
-
+		
 		
 		/* Determine if the MST by Prim equals the MST by Kruskal */
 		boolean pvk = true;
