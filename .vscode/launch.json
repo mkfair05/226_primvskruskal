@@ -10,7 +10,7 @@
             "name": "Debug (Launch)-PrimVsKruskal",
             "request": "launch",
             "mainClass": "PrimVsKruskal",
-            "args": "./Test_files/ewg_10vertices_0.txt"
+            "args": "./Test_files/test1.txt"
         }
     ]
 }

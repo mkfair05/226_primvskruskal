@@ -34,10 +34,7 @@
 
  import edu.princeton.cs.algs4.*;
  import java.util.Scanner;
-
-//  import org.graalvm.compiler.lir.EdgeMoveOptimizer;
-
- import java.io.File;
+import java.io.File;
 
 //Do not change the name of the PrimVsKruskal class
 public class PrimVsKruskal{
@@ -49,10 +46,12 @@ public class PrimVsKruskal{
 	static IndexMinPQ<Double> primPQ;   //priority queue for prim implementation
 	//-----------------------------------------------------------------------
 	static Queue<Edge> krusMST;  //mark edges in Kruskal MST
-	static IndexMinPQ<Edge> krusPQ;   //priority queue for kruskal implementation
+	static MinPQ<Edge> krusPQ;   //priority queue for kruskal implementation
 	static UF uf;				  //Union find data structure
 	static double weight;		 //total weight of kruskal MST
 	//-----------------------------------------------------------------------
+	static int numVertices;
+	
 	//gets the adjacency list from the matrix
 	public static double[] GetAdjList(double[][] G, int index){
 		return G[index];
@@ -61,9 +60,9 @@ public class PrimVsKruskal{
 	//prints adjacency list
 	static void PrintAdjList(double[] list){
 		for (int i = 0; i < list.length; i++){
-			System.out.println(list[i]);
+			System.out.println("Vertex: " + i + " Weight: "+list[i]);
 		}
-	}
+	} 
 
 	static int GetLength(double[][] G){
 		return G.length;
@@ -123,29 +122,31 @@ public class PrimVsKruskal{
 
 	static void InitKruskal(double[] adjList, int vertex, double[][] G){
 		krusPQ = new MinPQ<Edge>();
-		int numVertices = GetLength(G);
+		System.out.println("\nstarting vertex: " + vertex);
+		PrintAdjList(adjList);
 		for (int i = 0; i < adjList.length; i++){ //get all edges around A
 			if (adjList[i] > 0){
 				//there exists an edge between vertices index and i
-				int w = i;  
 				double weight = adjList[i];
-				Edge e = new Edge(vertex, w, weight);
+				Edge e = new Edge(vertex, i, weight);
 				krusPQ.insert(e); //insert all edges into priority queue
 			}
 		}
-
-		UF uf = new UF(numVertices);
-		while (!krusPQ.isEmpty() && krusMST.size() < numVertices){
-			Edge e = krusPQ.delMin();
-			int v = e.either();
-			int w = e.other(v);
-			if (!uf.connected(v,w)){
-				//if v-w doesn't create a cycle
-				uf.union(v,w);
-				krusMST.enqueue(e); //add edge to MST
-				weight +=e.weight();
-			}
-		}
+		// NULL POINTER EXCEPTION
+		// UF uf = new UF(numVertices);
+		// while (!krusPQ.isEmpty() && krusMST.size() < numVertices){
+		// 	Edge e = krusPQ.delMin();
+		// 	System.out.println(e);
+		// 	int v = e.either();
+		// 	int w = e.other(v);
+		// 	// if (!uf.connected(v,w)){
+		// 		// return e;
+		// 		//if v-w doesn't create a cycle
+		// // 		uf.union(v,w);
+		// // 		krusMST.enqueue(e); //add edge to MST
+		// // 		weight +=e.weight();
+		// 	// }
+		// }
 	}
 
 	/* PrimVsKruskal(G)
@@ -163,21 +164,15 @@ public class PrimVsKruskal{
 		/* (You may add extra methods if necessary) */
 		
 		/* ... Your code here ... */
-		
-		int n = GetLength(G);
+		numVertices = GetLength(G);
 		double[] adjList;
-		for (int i = 0; i < n; i++){
+		for (int i = 0; i < numVertices; i++){
+			// System.out.println("\nStart Vertex: " + i + "\n-------------");
 			adjList = GetAdjList(G, i);
+			// PrintAdjList(adjList);
 			InitKruskal(adjList, i, G);
-			InitPrim(adjList, G);
+
 		}
-
-
-
-
-
-
-
 
 
 
